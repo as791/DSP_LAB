@@ -64,20 +64,13 @@ void loop() {
   }
   
   //Data Prep for IDFT For respiration (0.005Hz to 0.5Hz i.e. k1=1, k2=15, signal info :- Fs=10 for 30sec) 
-  double X_real1[n],X_mag1[n],X_imag1[n];
   for(int i=0;i<n;i++)
   {
-    if(i>=k1&&i<=k2)
+    if(i<k1||i>k2)
     {
-      X_imag1[i]=X_imag[i];
-      X_real1[i]=X_real[i];
-      X_mag1[i]=X_mag[i];
-    }
-    else
-    {
-      X_imag1[i]=0;
-      X_real1[i]=0;
-      X_mag1[i]=0;
+      X_imag[i]=0;
+      X_real[i]=0;
+      X_mag[i]=0;
     }
   }
   
@@ -86,13 +79,13 @@ void loop() {
   double max_f=0;
   for(int i=0;i<n/2;i++)
   {
-    if(max_f<X_mag1[i])
+    if(max_f<X_mag[i])
     {
       p=i;
-      max_f=X_mag1[i];
+      max_f=X_mag[i];
     }
   }
-// Serial.println(60*p*Fs/n);
+Serial.println(60*p*Fs/n);
  
 
   //IDFT
@@ -107,10 +100,10 @@ void loop() {
     x_rec[i]/=n;
   }
   
-//  for(int i=0;i<n;i++)
-//  {
-//    Serial.println(x_rec[i]);
-//  }
+ for(int i=0;i<n;i++)
+ {
+   Serial.println(x_rec[i]);
+ }
 
   //Data Prep for FFT
   double vImag[samples],vReal[samples];
@@ -130,28 +123,23 @@ void loop() {
 //  double peak = FFT.MajorPeak(vReal,samples,Fs);
 //  Serial.println(peak*60);
 
-  //Data Prep for IFFT For respiration (0.005Hz to 0.5Hz i.e. k1=1, k2=15, signal info :- Fs=10 for 30sec) 
-  double vReal2[samples],vImag2[samples];
+  //Data Prep for IFFT For respiration (0.005Hz to 0.5Hz i.e. k1=1, k2=15, signal info :- Fs=10 for 30sec)
   for(int i=0;i<samples;i++)
   {
-    if(i>=k1&&i<=k2)
+    if(i<k1||i>k2)
       {
-        vReal2[i]=vReal[i];
-        vImag2[i]=vImag[i];
-      }
-    else{
-      vReal2[i]=0;
-      vImag2[i]=0;
+      vReal[i]=0;
+      vImag[i]=0;
     }
   }
-//  double peak = FFT.MajorPeak(vReal2,samples,Fs);
+//  double peak = FFT.MajorPeak(vReal,samples,Fs);
 //  Serial.print(60*peak);
 
 //  IFFT 
-  FFT.Compute(vReal2,vImag2,samples,exponent,FFT_REVERSE);
+  FFT.Compute(vReal,vImag,samples,exponent,FFT_REVERSE);
   for(int i=0;i<samples;i++)
   {
-    Serial.println(vReal2[i]);
+    Serial.println(vReal[i]);
   }
   while(1);
  
