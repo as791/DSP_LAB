@@ -1,2 +1,2 @@
 # DSP_LAB
-This is the normal lab work for coursework of Digital Signal Processing 
+This is lab work for the coursework of Digital Signal Processing 
